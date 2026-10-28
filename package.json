@@ -1,0 +1,3 @@
+{ "name": "smart-student-progress-monitoring-dashboard", "version": "1.0.0", "private": true,
+  "description": "DSA-II PBL: graphs and dynamic programming applied to student progress monitoring",
+  "scripts": { "test": "node tests/run-tests.js && node tests/extras.test.js" }, "license": "MIT" }
