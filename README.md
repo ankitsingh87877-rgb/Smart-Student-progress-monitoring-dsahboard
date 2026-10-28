@@ -1,42 +1,58 @@
 # Smart Student Progress Monitoring Dashboard (DSA-II)
 
-Individual Project Assignment for **Data Structures and Algorithms - II (CCSE0301)** at **NIET Greater Noida**.  
-**Student Name:** Ankit Singh  
-**Roll No / Enrollment No:** 2501330100075  
-**Course:** B.Tech Computer Science and Engineering  
-
----
+[![Course: CCSE0301](https://img.shields.io/badge/Course-CCSE0301%20Data%20Structures%20%26%20Algorithms%20II-blue)](https://www.niet.co.in)
+[![Institution: NIET Greater Noida](https://img.shields.io/badge/Institution-NIET%20Greater%20Noida-orange)](https://www.niet.co.in)
+[![Language: C](https://img.shields.io/badge/Language-C%20(ISO%20C99)-green)](https://en.wikipedia.org/wiki/C_(programming_language))
 
 ## Project Overview
-The **Smart Student Progress Monitoring Dashboard** is a C-based system that uses core Data Structures and Algorithms from **Unit 2 (Graphs)** and **Unit 3 (Dynamic Programming)** to track academic progress, identify at-risk students, cluster student performance metrics, compute optimal peer-support networks, and generate personalized study schedules.
+An advanced, modular console application built for academic progress tracking, early at-risk student detection, optimal peer-support networking, and personalized study-hour optimization. This project implements core concepts from **Unit 2 (Graphs)** and **Unit 3 (Dynamic Programming)** in pure C programming language.
 
 ---
 
-## DSA Concepts Implemented
-1. **Graphs (Unit 2):**
-   - **Adjacency List Representation:** Efficient storage $O(V + E)$ for students, subjects, and performance metrics.
-   - **BFS & DFS:** Level-wise and depth-wise search traversals for student cluster analysis.
-   - **Connected Components:** Identifies isolated student groups and at-risk clusters.
-   - **Kruskal's Algorithm:** Computes the Minimum Spanning Tree ($O(E \log E)$) for optimal peer-support link structures.
-   - **Dijkstra's Algorithm:** Finds the shortest distance path ($O((V + E) \log V)$) to recommend mentors and study partners.
+## Student & Course Details
+* **Student Name:** Ankit Singh
+* **Roll / Enrollment No:** 2501330100075
+* **Course Code & Name:** CCSE0301 - Data Structures and Algorithms - II
+* **Faculty Name:** Mr. Shamshad Ali
+* **Institution:** Noida Institute of Engineering and Technology (NIET), Greater Noida
 
-2. **Dynamic Programming (Unit 3):**
-   - **0/1 Knapsack:** Selects the optimal combination of study modules to maximize marks gain within limited weekly study hours ($O(n \cdot W)$).
-   - **Longest Common Subsequence (LCS):** Compares student performance trend sequences and checks string similarities ($O(m \cdot n)$).
-   - **Memoization:** Caches repeated semester aggregate SGPA calculations to optimize performance.
+---
+
+## System Architecture & DSA Mapping
+
+| Module / Feature | Applied DSA Concept | Unit Reference | Time Complexity | Space Complexity |
+| :--- | :--- | :--- | :--- | :--- |
+| **Student-Subject Graph** | Adjacency List | Unit 2 (Graphs) | $O(V + E)$ | $O(V + E)$ |
+| **Cluster Analysis** | Breadth-First Search (BFS) / DFS | Unit 2 (Graphs) | $O(V + E)$ | $O(V)$ |
+| **Isolated Student Detection** | Connected Components | Unit 2 (Graphs) | $O(V + E)$ | $O(V)$ |
+| **Optimal Peer-Support Network** | Kruskal’s MST | Unit 2 (Graphs) | $O(E \log E)$ | $O(V + E)$ |
+| **Mentor / Peer Recommendation** | Dijkstra’s Algorithm | Unit 2 (Graphs) | $O((V + E) \log V)$ | $O(V)$ |
+| **Personalized Study Plan** | 0/1 Knapsack | Unit 3 (Dynamic Programming) | $O(n \cdot W)$ | $O(n \cdot W)$ |
+| **Trend & ID String Similarity** | Longest Common Subsequence (LCS) | Unit 3 (Dynamic Programming) | $O(m \cdot n)$ | $O(m \cdot n)$ |
+| **Cumulative SGPA Aggregates** | Top-Down Memoization | Unit 3 (Dynamic Programming) | $O(N)$ | $O(N)$ |
 
 ---
 
 ## Repository File Structure
-- `student_dashboard.h` — Header file containing structures, enums, and function prototypes.
-- `graph_module.c` — Implementation of graph construction, BFS, DFS, Connected Components, Kruskal's MST, and Dijkstra's algorithm.
-- `dp_module.c` — Implementation of 0/1 Knapsack, LCS, and Memoized SGPA calculation.
-- `main.c` — Interactive console driver program executing all modules with sample test data.
+- `student_dashboard.h` — Header file defining global data structures (`Student`, `Graph`, `Vertex`, `Edge`) and function prototypes.
+- `graph_module.c` — Implementation of graph operations, BFS/DFS traversals, Connected Components, Kruskal's Algorithm, and Dijkstra's Algorithm.
+- `dp_module.c` — Implementation of 0/1 Knapsack study planner, LCS trend checker, and Memoized SGPA calculation.
+- `main.c` — Interactive driver program initializing sample datasets and executing core workflows.
+- `dataset.csv` — External sample student dataset records.
+- `Makefile` — Build automation configuration file.
 
 ---
 
-## How to Compile and Run
-You can compile and run the project using `gcc`:
+## Compilation & Execution Guide
+
+### Using Make (Recommended)
+```bash
+make          # Compiles the program
+make run      # Executes the compiled dashboard
+make clean    # Removes binary and object files
+```
+
+### Manual Compilation using GCC
 ```bash
 gcc main.c graph_module.c dp_module.c -o student_dashboard -lm
 ./student_dashboard
