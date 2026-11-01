@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Smart Student Progress Monitoring Dashboard</title>
+<meta name="description" content="DSA-II PBL final report by Ankit Singh as an interactive website: heaps, AVL trees, graphs, dynamic programming, backtracking and branch and bound applied to student progress monitoring.">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="top"><div class="wrap">
+  <b>SSPMD</b>
+  <a href="#overview">Overview</a><a href="#problem">Problem</a><a href="#industry">Industry</a>
+  <a href="#data">Data</a><a href="#m1">Trees &amp; Heaps</a><a href="#m2">Graphs</a><a href="#m3">DP</a>
+  <a href="#m4">Backtracking</a><a href="#m5">Adv. Trees</a><a href="#testing">Testing</a>
+  <a href="#reflection">Reflection</a><a href="#repo">Code</a><a href="#refs">References</a>
+</div></header>
+
+<main class="wrap">
+
+<div class="hero" id="overview">
+  <span class="tag">DSA-II · PBL Final Report · Month 3</span>
+  <h1>Smart Student Progress Monitoring Dashboard</h1>
+  <p class="lead">Combines marks, attendance and assignment scores into a progress score, ranks students by risk, links each at-risk student to a similar and stronger peer, plans study hours and schedules mentoring, using classical algorithms that stay explainable. Supports <b>SDG 4 – Quality Education</b>.</p>
+  <div class="btns">
+    <a class="btn primary" href="#data">Try it with your own data</a>
+    <a class="btn" href="https://github.com/ankitsingh87877-rgb/Smart-Student-progressmonitoring-dsahboard">View source on GitHub</a>
+  </div>
+  <div class="meta">
+    <div><span>Student</span>Ankit Singh · 2501330100075</div>
+    <div><span>Course</span>Data Structures and Algorithms – II (CCSE0301)</div>
+    <div><span>Faculty</span>Mr. Shamshad Ali</div>
+    <div><span>Programme</span>B.Tech CSE – A, NIET Greater Noida</div>
+    <div><span>Assignment</span>Individual · Submitted 29-10-2026</div>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat"><b>5</b><span>tasks solved with course topics</span></div>
+  <div class="stat"><b>13/13</b><span>tests pass vs independent checks</span></div>
+  <div class="stat"><b>20,000</b><span>synthetic records benchmarked</span></div>
+  <div class="stat"><b>26 min</b><span>optimal mentor round</span></div>
+</div>
+
+<section id="problem">
+  <h2>Problem &amp; Objective</h2>
+  <p class="sub">Teachers usually see a struggling student only after an exam has been lost, because marks, attendance and assignments live in separate registers.</p>
+  <div class="grid2">
+    <div class="card"><h3 style="margin-top:0">Problem statement</h3>
+      <p>Given each student's marks, attendance and assignment results: compute a progress score, rank and flag at-risk students, find the closest suitable peer or mentor, plan study hours, and schedule mentoring without clashes.</p>
+      <p><b>Target users:</b> faculty mentors, class coordinators and students.</p></div>
+    <div class="card"><h3 style="margin-top:0">Constraints &amp; scope</h3>
+      <ul><li>Scores normalised to 0–1; distances never negative</li><li>Study time and mentoring slots are limited</li><li>Console prototype on synthetic data</li><li>Excludes real records, machine learning and ERP integration</li></ul></div>
+  </div>
+  <h3>Success criteria</h3>
+  <div class="chips"><span class="chip">Most at-risk student ranked first</span><span class="chip">Dijkstra = Floyd–Warshall</span><span class="chip">Study plan = brute force</span><span class="chip">Slot count = brute force</span><span class="chip">Mentor round = brute force</span><span class="chip">Memoization removes repeated work</span></div>
+</section>
+
+<section id="industry">
+  <h2>Industry &amp; Application Overview</h2>
+  <p class="sub">Colleges and online platforms use learning analytics and early-warning systems to find students at risk.</p>
+  <div class="grid2">
+    <div class="card"><b>Albreiki, Habuza &amp; Zaki (2023)</b><p>Turn student records into a graph through a distance-based adjacency matrix and feed topological features to machine learning.</p></div>
+    <div class="card"><b>Trask et al. (2024)</b><p>Put students, videos and assessments into one heterogeneous graph for online courses.</p></div>
+  </div>
+  <div class="card"><b>Gap this project fills</b>
+    <p>The first approach links students only, needs O(n²) matrix space, depends on a distance threshold and relies on training that is hard to explain. The second does not say what a weak student should do next. This project uses an adjacency list, a documented threshold and plain classical algorithms, and gives <b>actionable outputs</b>: a priority list, a nearest mentor, a study-hour plan and a clash-free mentoring schedule.</p></div>
+</section>
+
+<section id="data">
+  <h2>Data &amp; Progress Score</h2>
+  <p class="sub">Progress score = 0.5 × marks + 0.3 × attendance + 0.2 × assignments. Students below <b>55</b> are at risk. Edit the CSV below and press <b>Recompute</b>: every demo on this page updates.</p>
+  <div class="card">
+    <div class="row"><label for="csv">Student records (id,name,marks,attendance,assignments)</label></div>
+    <textarea id="csv" rows="8" style="width:100%;font:13px ui-monospace,Menlo,monospace;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px"></textarea>
+    <div class="row"><button class="btn primary" id="recompute">Recompute</button><button class="btn" id="reset">Reset to report sample</button><span id="csvmsg" class="sub" style="margin:0"></span></div>
+  </div>
+  <div class="card tw"><table id="scoreTable"></table></div>
+</section>
+
+<section id="m1">
+  <h2>Module 1 · Trees &amp; Heaps <small>binary max-heap · heap sort · AVL</small></h2>
+  <p class="sub">A max-heap ordered by risk (100 − score, ties broken by lower attendance) keeps the most at-risk student on top; insert and remove cost O(log n); heap sort ranks the class in O(n log n). An AVL tree keyed by progress score gives sorted display and range queries in O(log n + k).</p>
+  <h3>Risk ranking (heap sort)</h3>
+  <div class="card tw"><table id="rankTable"></table></div>
+  <h3>AVL tree range query</h3>
+  <div class="card">
+    <div class="row"><label>Low <input type="number" id="lo" value="40" min="0" max="100" style="width:80px"></label>
+      <label>High <input type="number" id="hi" value="60" min="0" max="100" style="width:80px"></label></div>
+    <p id="avlInfo" class="sub"></p><div id="avlRange" class="chips"></div>
+    <div class="tree"><svg id="avlSvg" role="img" aria-label="AVL tree of progress scores"></svg></div>
+  </div>
+  <p class="sub">Report result: height 4 after 7 rotations on 12 students. On 20,000 synthetic records the AVL height was 17 against an ideal of about 15, and the range query (~8 ms) was only slightly ahead of a list filter (~12 ms), so its advantage appears with larger data or repeated queries.</p>
+</section>
+
+<section id="m2">
+  <h2>Module 2 · Graphs <small>adjacency list · BFS · DFS · Dijkstra · Kruskal</small></h2>
+  <p class="sub">Each student is a node; two students share an edge when the Euclidean distance between their normalised (marks, attendance, assignments) vectors is at most the threshold. Space O(V+E), traversals O(V+E), Dijkstra O((V+E) log V), Kruskal O(E log E).</p>
+  <div class="card">
+    <div class="row"><label for="thr">Similarity threshold: <b id="thrVal">0.15</b></label><input type="range" id="thr" min="0.05" max="0.40" step="0.01" value="0.15"></div>
+    <p class="sub" id="graphInfo"></p>
+    <svg id="graph" viewBox="0 0 760 420" role="img" aria-label="Student similarity graph"></svg>
+    <div class="row"><label>Select student <select id="pick"></select></label><span class="sub" style="margin:0">Click a node to select it. Green = mentor candidate (score ≥ 80), red = at-risk.</span></div>
+    <div id="mentorBox" class="card" style="margin:10px 0 0"></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><b>Mentor table</b><div class="tw"><table id="mentorTable"></table></div></div>
+    <div class="card"><b>Traversal &amp; spanning tree</b><div id="travInfo"></div></div>
+  </div>
+  <p class="sub">Report result at 0.15: 14 edges, two components (eleven connected students, S10 alone), Kruskal MST of 10 edges and weight 0.915. At 0.20 or higher S10 joins the main cluster. Prim, Bellman–Ford, matrix-chain multiplication and topological sort were studied but not coded, and Floyd–Warshall is used only to cross-check Dijkstra.</p>
+</section>
+
+<section id="m3">
+  <h2>Module 3 · Dynamic Programming <small>0/1 knapsack · LCS · memoization</small></h2>
+  <h3>Study-hour planner (0/1 knapsack, O(n × W))</h3>
+  <div class="card">
+    <div class="row"><label for="hours">Available study hours: <b id="hoursVal">10</b></label><input type="range" id="hours" min="0" max="17" value="10"></div>
+    <div class="tw"><table id="topicTable"></table></div>
+    <p id="knapInfo" style="margin-bottom:0"></p>
+  </div>
+  <h3>Duplicate roll-number check (LCS, O(m × n))</h3>
+  <div class="card">
+    <div class="row"><input type="text" id="lcsA" value="S0123" size="10"><input type="text" id="lcsB" value="S0132" size="10"><span id="lcsOut"></span></div>
+    <p class="sub" style="margin-bottom:0">A long common subsequence between two different roll numbers flags a probable typo.</p>
+  </div>
+  <h3>Memoization of semester averages</h3>
+  <div class="card"><p style="margin:0">For 12 students and 6 semesters, five dashboard refreshes need <b>360</b> averages without caching but only <b>72</b> with memoization.</p></div>
+</section>
+
+<section id="m4">
+  <h2>Module 4 · Backtracking &amp; Branch and Bound <small>graph colouring · route search</small></h2>
+  <h3>Clash-free mentoring slots (graph colouring)</h3>
+  <p class="sub">Two at-risk students who share a weak subject need the same mentor, so they cannot take the same slot. Conflicts: S05–S06, S05–S07, S05–S10, S06–S10, S07–S10, S10–S11.</p>
+  <div class="card">
+    <div class="row"><label for="slots">Number of slots</label><select id="slots"><option>1</option><option>2</option><option selected>3</option><option>4</option></select></div>
+    <p id="colourOut"></p>
+    <details><summary>Backtracking steps</summary><div class="log" id="colourLog"></div></details>
+  </div>
+  <h3>Mentor round (branch and bound)</h3>
+  <p class="sub">Office → Block A → Block B → Block C → Library → Office. A partial route is dropped as soon as it costs at least the best full route found.</p>
+  <div class="card">
+    <div class="tw"><table id="travelTable"></table></div>
+    <p id="tspOut" style="margin-bottom:0"></p>
+  </div>
+  <p class="sub">The travel times above are fixed synthetic values chosen for this website. They are illustrative and reproduce the report's 26-minute result. Hamiltonian cycles and sum of subsets follow the same pattern and were studied only.</p>
+</section>
+
+<section id="m5">
+  <h2>Module 5 · Advanced Trees &amp; Heaps <small>design study, not coded</small></h2>
+  <div class="grid2">
+    <div class="card"><b>B+ tree</b><p>Suits a university-wide student database on disk; linked leaves answer range queries such as "all students scoring 40–60".</p></div>
+    <div class="card"><b>Red-black tree</b><p>Guaranteed O(log n) updates for a live in-memory dashboard.</p></div>
+    <div class="card"><b>Fibonacci heap</b><p>Lowers Dijkstra's bound to O(E + V log V) on a very large similarity graph.</p></div>
+    <div class="card"><b>Binomial heap</b><p>Cheap merging of department-wise priority queues.</p></div>
+  </div>
+  <p class="sub">Not implemented because a class of a few thousand students shows no practical gain. B-trees were also studied.</p>
+</section>
+
+<section id="testing">
+  <h2>Integrated Solution &amp; Validation</h2>
+  <p class="sub">The program loads and validates records (LCS flags near-duplicate roll numbers), computes progress scores, ranks with the heap, keeps the AVL tree, builds the similarity graph, finds clusters, mentors and the spanning tree, then plans study hours, slots and the mentor's round. Data handling is separate from the algorithms.</p>
+  <div class="card tw"><table class="tests" id="testTable"></table>
+    <div class="row"><button class="btn primary" id="runTests">Run all checks live in your browser</button><span id="testSummary"></span></div></div>
+  <div class="card"><b>Benchmark on synthetic data</b>
+    <p>Report (1,500 students, threshold 0.08): 4,607 edges, graph build ~0.30 s, component search 0.004 s, Dijkstra 0.001 s, Kruskal 0.007 s. Building the graph compares every pair of students, O(n²), so it is the bottleneck for very large classes. Times vary by machine, and all data is synthetic, so results show algorithmic correctness, not educational effectiveness.</p>
+    <div class="row"><label>Students <select id="benchN"><option>500</option><option selected>1500</option><option>3000</option></select></label><button class="btn" id="bench">Run benchmark</button></div>
+    <p id="benchOut" class="sub" style="margin-bottom:0"></p></div>
+</section>
+
+<section id="reflection">
+  <h2>Benefits, Challenges &amp; Future Work</h2>
+  <div class="grid2">
+    <div class="card"><b>Expected benefits</b><ul><li>Explainable priority list for mentors</li><li>A named peer and a study plan for each at-risk student</li><li>Mentoring scheduled without clashes</li></ul><p class="sub">Learning outcomes: choosing the right data structure, analysing time complexity, using DP only where it pays off, validating against independent checks.</p></div>
+    <div class="card"><b>Challenges</b><ul><li>Defining nodes, edges and weights: solved with a normalised distance and a documented threshold</li><li>Equal risk scores: ties broken by attendance, tests compare keys</li><li>A loose threshold joins everyone into one cluster</li><li>Confidential real data: synthetic data and fixed travel times used</li></ul></div>
+    <div class="card"><b>Future improvements</b><ul><li>Anonymised real records; tune threshold and weights with faculty</li><li>B+ trees, Fibonacci heaps, faster graph building than all-pairs</li><li>Menu or web interface with a database; prerequisites via topological sort</li></ul></div>
+    <div class="card"><b>Conclusion</b><p>Trees and heaps, graphs, dynamic programming, and backtracking with branch and bound combine to solve one educational workflow. All thirteen tests pass, including a 26-minute mentor round and a 3-slot schedule that equal their brute-force checks.</p></div>
+  </div>
+</section>
+
+<section id="repo">
+  <h2>Repository Structure</h2>
+  <p class="sub">What is in the GitHub repository for this project.</p>
+  <div class="files">
+    <div><code>index.html</code>This website (report overview + live demos)</div>
+    <div><code>css/style.css</code>Styling, light and dark mode</div>
+    <div><code>js/algorithms.js</code>Heap, AVL, graph, DP, backtracking and branch-and-bound in JavaScript</div>
+    <div><code>js/app.js</code>Page logic and rendering</div>
+    <div><code>js/tests.js</code>Node test script (<code style="display:inline">node js/tests.js</code>)</div>
+    <div><code>c/student_dashboard.c</code>C console prototype (heap, AVL, graph, DP, backtracking, B&amp;B) + Makefile</div>
+    <div><code>python/student_dashboard.py</code>Equivalent Python prototype</div>
+    <div><code>docs/</code>Final report PDF</div>
+    <div><code>README.md</code>Overview, how to run, how to publish</div>
+  </div>
+  <pre>cd c &amp;&amp; make run                    # C prototype + all checks
+python python/student_dashboard.py   # Python prototype + all checks
+node js/tests.js                      # JS port checks
+# website: open index.html, or enable GitHub Pages</pre>
+</section>
+
+<section id="refs">
+  <h2>References</h2>
+  <ol class="refs">
+    <li>B. Albreiki, T. Habuza and N. Zaki, "Extracting topological features to identify at-risk students using machine learning and graph convolutional network models," Int. J. Educ. Technol. High. Educ., vol. 20, art. 23, 2023. <a href="https://doi.org/10.1186/s41239-023-00389-3">doi</a></li>
+    <li>T. Trask, N. Lytle, M. Boyle, D. Joyner and A. Mubarak, "A comparative analysis of student performance predictions in online courses using heterogeneous knowledge graphs," arXiv:2407.12153, 2024. <a href="https://arxiv.org/abs/2407.12153">arXiv</a></li>
+    <li>T. H. Cormen, C. E. Leiserson, R. L. Rivest and C. Stein, Introduction to Algorithms, 4th ed. MIT Press, 2022.</li>
+    <li>E. W. Dijkstra, "A note on two problems in connexion with graphs," Numerische Mathematik, vol. 1, pp. 269–271, 1959.</li>
+    <li>J. B. Kruskal, "On the shortest spanning subtree of a graph and the traveling salesman problem," Proc. Amer. Math. Soc., vol. 7, no. 1, pp. 48–50, 1956.</li>
+    <li>R. W. Floyd, "Algorithm 97: Shortest path," Commun. ACM, vol. 5, no. 6, p. 345, 1962. <a href="https://doi.org/10.1145/367766.368168">doi</a></li>
+    <li>United Nations, "Goal 4: Ensure inclusive and equitable quality education," SDGs. <a href="https://sdgs.un.org/goals/goal4">sdgs.un.org</a></li>
+  </ol>
+</section>
+</main>
+
+<footer><div class="wrap">Ankit Singh · B.Tech CSE – A · NIET Greater Noida · DSA-II (CCSE0301) PBL Final Report, 29-10-2026. Prototype uses synthetic data only.</div></footer>
+
+<script src="js/algorithms.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
