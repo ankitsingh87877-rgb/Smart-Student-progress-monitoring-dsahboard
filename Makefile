@@ -1,15 +1,16 @@
-CC = gcc
-CFLAGS = -Wall -Wextra -std=c99
-TARGET = student_dashboard
-OBJS = main.c graph_module.c dp_module.c
+CC      ?= gcc
+CFLAGS  ?= -O2 -Wall -Wextra
+TARGET   = student_dashboard
 
 all: $(TARGET)
 
-$(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(TARGET) -lm
-
-clean:
-	rm -f $(TARGET) *.o
+$(TARGET): student_dashboard.c
+	$(CC) $(CFLAGS) -o $@ $< -lm
 
 run: $(TARGET)
 	./$(TARGET)
+
+clean:
+	rm -f $(TARGET) $(TARGET).exe
+
+.PHONY: all run clean
